@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="assets/js/vue.min.js"></script>
+    <script defer src="assets/js/main.js"></script>
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <div id="app">
+        <div v-show="!username">
+            <input type="text" v-model="inputName">
+            <button @click="setUsername">Отправить</button>
+        </div>
+
+        <div>
+            <h1>Let's start {{ username }}</h1>
+            <h2 v-show="boardSize">{{boardSize}}x{{boardSize}}</h2>
+        </div>
+
+        <div v-show="!boardSize">
+            <input type="text" v-model="inputBoard">
+            <button @click="setBoard">Отправить</button>
+        </div>
+
+        <div class="game-field" v-show="board!=''">
+            <div class="row" v-for="(row,index) in board">
+                <game-field class="text-field" v-for="field in row" v-bind:id="field.id">{{field.content}}</game-field>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
