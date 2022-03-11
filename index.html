@@ -9,28 +9,34 @@
     <script src="assets/js/vue.min.js"></script>
     <script defer src="assets/js/main.js"></script>
     <link href="assets/css/style.css" rel="stylesheet">
+
 </head>
 <body>
 <div class="wrapper">
     <div id="app">
-        <div v-show="!username">
-            <input type="text" v-model="inputName">
+
+        <div v-show="!currentPlayer.name " class="setting">
+            <label for="name">Input {{players.length + 1}} player's name</label>
+            <input type="text" v-model="inputName" id="name">
             <button @click="setUsername">Отправить</button>
         </div>
 
-        <div>
-            <h1>Let's start {{ username }}</h1>
-            <h2 v-show="boardSize">{{boardSize}}x{{boardSize}}</h2>
-        </div>
-
-        <div v-show="!boardSize">
-            <input type="text" v-model="inputBoard">
+        <div v-if="showSettings" class="setting">
+            <label for="size">Input board size</label>
+            <select id="size" v-model="inputBoard">
+                <option selected="" disabled="" value="">--------</option>
+                <option>3</option>
+                <option>5</option>
+                <option>10</option>
+            </select>
             <button @click="setBoard">Отправить</button>
         </div>
-
+        <h2 v-show="boardSize" id="winner">{{showWinner}}</h2>
         <div class="game-field" v-show="board!=''">
-            <div class="row" v-for="(row,index) in board">
-                <game-field class="text-field" v-for="field in row" v-bind:id="field.id">{{field.content}}</game-field>
+            <div class="row" v-for="(row ,index) in board">
+                <square class="text-field" v-for="field in row" v-bind:field="field" v-bind:key="field.id"
+                        @click.native="makeMove(field)">
+                </square>
             </div>
         </div>
 

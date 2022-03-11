@@ -5,12 +5,27 @@ body {
     font-family: Sans-serif, serif;
 
 }
+label{
+    font-size: 18px;
+}
 
+.setting{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-width: 300px;
+    min-height: 150px;
+    align-items: center;
+}
+.setting > button{
+    ;
+}
 .wrapper {
-    max-width: 1200px;
+    padding-top:100px;
     height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .game-field {
@@ -36,16 +51,3 @@ body {
     cursor: pointer;
 }
 
-span.won {
-    text-decoration: line-through;
-    color: red;
-}
-
-footer {
-    font-size: 18px;
-    color: #ebd131;
-    height: 20%;
-
-    flex: 0 0 auto;
-    text-align: center;
-}
