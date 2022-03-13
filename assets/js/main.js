@@ -7,6 +7,7 @@ Vue.component('square', {
 var vm = new Vue({
     el: '#app',
     data: {
+        gameMode: null,
         inProgress: false,
         winner: null,
         players: [],
@@ -50,7 +51,7 @@ var vm = new Vue({
             for (let i = 0; i < this.boardSize; i++) {
                 this.board.push([]);
                 for (let j = 0; j < this.boardSize; j++) {
-                    this.board[i].push({content: ''});
+                    this.board[i].push({id: j, content: ''});
                 }
             }
 
@@ -83,27 +84,59 @@ var vm = new Vue({
         },
 
 
-        FieldInRow: function (arr, count) {
-
-            let idArr = arr.filter((field) => {
-                if (field.content === this.currentPlayer.figure) {
-                    return field
-                }
-            }, this).map(value => value.id)
-
+        FieldInRow: function (arr, mod, count = 5) {
             let counter = 1;
-
-            for (let i = 0; i < idArr.length; i++) {
-                if (counter === count) {
-                    return true;
+            if (mod === "row") {
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if (counter === count) {
+                            return true
+                        }
+                        if ([j + 1] < arr.length) {
+                            if (arr[i][j].content !== '' && arr[i][j].content === arr[i][j + 1].content) {
+                                counter++;
+                                continue;
+                            }
+                        }
+                        counter = 1;
+                    }
                 }
-                if (idArr[i] === idArr[i + 1] - 1) {
-                    counter++;
-                    continue;
-                }
-                counter = 0;
+                return false;
             }
-            return false;
+
+            if (mod === "column") {
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if (counter === count) {
+                            return true
+                        }
+                        if ([j + 1] < arr.length) {
+                            if (arr[j][i].content !== '' && arr[j][i].content === arr[j + 1][i].content && arr[j][i].content) {
+                                counter++;
+                                continue;
+                            }
+                        }
+                        counter = 1;
+                    }
+                }
+                return false;
+            }
+
+            if (mod === "diag") {
+                let zxc =[]
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if ([i + 1] < arr.length) {
+                            zxc.push(arr[i + 1][i])
+                        }
+
+                    }
+
+                }
+                console.log(zxc)
+            }
+
+
         },
 
 
@@ -114,62 +147,48 @@ var vm = new Vue({
                 let column = this.board[0].map((val, index) => this.board.map(row => row[index]).reverse());
 
                 // Строки
-                for (let i = 0; i < this.boardSize; i++) {
 
-                    if (this.boardSize === '3' && this.board[i].every(field => field.content === this.currentPlayer.figure)) {
-                        this.winner = this.currentPlayer.name;
-                        this.inProgress = false;
-                    }
+                if (this.boardSize <= '5' && this.FieldInRow(this.board, 'row', Number(this.boardSize))) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
+                }
 
-                    if (this.boardSize === '5' && this.FieldInRow(this.board[i], 4)) {
-                        this.winner = this.currentPlayer.name;
-                        this.inProgress = false;
-                    }
-
+                if (this.boardSize > '5' && this.FieldInRow(this.board, 'row')) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
                 }
 
                 // Столбцы
 
-                for (let i = 0; i < this.boardSize; i++) {
-                    if (this.boardSize === '3' && column[i].every(field => field.content === this.currentPlayer.figure)) {
-                        this.winner = this.currentPlayer.name;
-                        this.inProgress = false;
-                    }
-
-                    if (this.boardSize === '5' && this.FieldInRow(this.board, 4)) {
-                        this.winner = this.currentPlayer.name;
-                        this.inProgress = false;
-                    }
+                if (this.boardSize <= '5' && this.FieldInRow(this.board, 'column', Number(this.boardSize))) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
                 }
 
-                //диагональ
-                //
-                // for (let i = 0; i < this.boardSize; i++) {
-                //     for (let j = 0; j < this.boardSize; j++) {
-                //         if (i === j) {
-                //             mainDiag.push(this.board[i][j]);
-                //         }
-                //         if (i + j === this.boardSize - 1) {
-                //             secondDiag.push(this.board[i][j]);
-                //         }
-                //     }
-                // }
-                //
-                // if (mainDiag.every(field => field.content === this.currentPlayer.figure)) {
-                //     this.winner = this.currentPlayer.name;
-                //     this.inProgress = false;
-                // }
-                //
-                // if (secondDiag.every(field => field.content === this.currentPlayer.figure)) {
-                //     this.winner = this.currentPlayer.name;
-                //     this.inProgress = false;
-                // }
+                if (this.boardSize > '5' && this.FieldInRow(this.board, 'column')) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
+                }
+
+                // диагональ
+
+                if (this.boardSize <= '5' && this.FieldInRow(this.board, 'diag', Number(this.boardSize))) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
+                }
+
+                if (this.boardSize > '5' && this.FieldInRow(this.board, 'diag')) {
+                    this.winner = this.currentPlayer.name;
+                    this.inProgress = false;
+                }
+
 
                 if (this.movesMade === Math.pow(this.boardSize, 2)) {
                     this.inProgress = false;
                 }
+
             }
-        },
+        }
     }
 })
 
